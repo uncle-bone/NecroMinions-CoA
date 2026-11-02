@@ -2,7 +2,7 @@
 ## Title: NecroMinions 
 ## Notes: Necromancer's pets HP bar(nizhni express).
 ## Author: Smollett (original); Uncle Bone (CoA maintainer)
-## Version: 0.8.4
+## Version: 0.8.5
 ## SavedVariables: NecroMinionsDB
 ## SavedVariablesPerCharacter: NecroMinionsCharDB
 
