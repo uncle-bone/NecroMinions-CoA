@@ -1085,9 +1085,7 @@ local function RestoreRefreshedPlates()
     local cdb = NecroMinionsCharDB
     local off = type(cdb) == "table" and type(cdb.plateRefreshOff) == "table" and cdb.plateRefreshOff
     if not off then return end
-    for _, key in ipairs(friendlyPlateCVars) do
-        if off[key] then pcall(SetCVar, key, "1") end
-    end
+    -- Legacy recovery data must not override current player preferences.
     cdb.plateRefreshOff = nil
 end
 
@@ -1844,7 +1842,7 @@ local function DetectClass()
     if active then
         mainContainer:Show()
         -- Before StartAutoHealth, which restores or extends this backup.
-        Config.ClaimAccountBackup(NecroMinionsCharDB, NecroMinionsDB)
+        -- Legacy backup is intentionally not applied; user CVars are immutable.
         Client.StartAutoHealth()
         RefreshUnits()
     else
