@@ -432,15 +432,8 @@ function Client.StartAutoHealth()
     if type(GetCVar) ~= "function" or type(SetCVar) ~= "function" then return end
     local cdb = CharacterData()
     if not cdb then return end
-    local backup = cdb.nameplateBackup or {}
-    for _, key in ipairs(nameplateCVars) do
-        local ok, value = pcall(GetCVar, key)
-        if ok and value ~= nil then
-            if backup[key] == nil then backup[key] = tostring(value) end
-            if tostring(value) ~= "1" then pcall(SetCVar, key, "1") end
-        end
-    end
-    cdb.nameplateBackup = backup
+    -- Read only: the player's friendly-nameplate preferences are authoritative.
+    -- Health remains available through existing visible unit tokens and combat logs.
 end
 
 function Client.StopAutoHealth(isLoggingOut)
@@ -473,13 +466,7 @@ function Client.StopAutoHealth(isLoggingOut)
     end
     local cdb = CharacterData()
     local backup = cdb and cdb.nameplateBackup
-    if backup and type(SetCVar) == "function" then
-        for key, value in pairs(backup) do
-            -- Do not undo a preference the user changed independently.
-            local ok, current = pcall(GetCVar, key)
-            if ok and tostring(current) == "1" then pcall(SetCVar, key, value) end
-        end
-    end
+    -- Never restore old CVar snapshots: they may overwrite the player's settings.
     if cdb then cdb.nameplateBackup = nil end
     if Client.UpdatePlateVisuals then Client.UpdatePlateVisuals() end
 end
