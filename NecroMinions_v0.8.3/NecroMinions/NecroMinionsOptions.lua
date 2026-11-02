@@ -29,7 +29,7 @@ function Options.Create(callbacks)
 
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)
-    title:SetText("NecroMinions v0.8.5")
+    title:SetText("NecroMinions v0.8.6")
     local scroll = CreateFrame("ScrollFrame", "NecroMinionsOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", panel, "TOPLEFT", 8, -42)
     scroll:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -30, 12)
@@ -253,13 +253,13 @@ function Options.Create(callbacks)
         { "both", "HP + percentage" }, { "hidden", "Hidden" },
     }, false)
     checkbox("showTooltips", "Full-name / health tooltip")
-    checkbox("autoHealth", "Automatic nearby health (hidden nameplates on summon, combat and drains)", function(value)
+    checkbox("autoHealth", "Nearby health from available unit tokens (never changes nameplate settings)", function(value)
         if callbacks.onAutoHealthChanged then callbacks.onAutoHealthChanged(value) end
     end)
 
     heading("Minion nameplates")
     checkbox("minionPlates", "Hide my minions' nameplates (keep health tracking)")
-    description("Suppresses the driver's visible minion frames, including camera and target alpha updates. Health tokens stay active during automatic health pulses.")
+    description("Hides already-visible tracked minion plates. Does not enable friendly nameplates or change nameplate CVars.")
 
     heading("Tracking")
     checkbox("trackTemporary", "Track temporary summons", function(value)
