@@ -1,0 +1,59 @@
+name: Build and publish NecroMinions
+on:
+  push:
+    branches: [main]
+    paths: ['.release.json']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: necrominions-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and package
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, re, zipfile, os
+          root=pathlib.Path(".")
+          cfg=json.loads((root/".release.json").read_text())
+          assert re.fullmatch(r"v\d+\.\d+\.\d+",cfg["version"])
+          folder=root/cfg["folder"]
+          assert folder.is_dir() and folder.name=="NecroMinions"
+          toc=folder/"NecroMinions.toc"
+          assert toc.is_file()
+          lines=toc.read_text(encoding="utf-8-sig").splitlines()
+          assert "## Version: "+cfg["version"][1:] in lines
+          for line in lines:
+              s=line.strip()
+              if s and not s.startswith("#"):
+                  assert (folder/s.replace("\\","/")).is_file(),s
+          out=root/"dist"
+          out.mkdir(exist_ok=True)
+          archive=out/("NecroMinions-CoA-"+cfg["version"]+".zip")
+          with zipfile.ZipFile(archive,"w",zipfile.ZIP_DEFLATED) as z:
+              for file in sorted(folder.rglob("*")):
+                  if file.is_file():
+                      z.write(file, file.relative_to(folder.parent).as_posix())
+          with zipfile.ZipFile(archive) as z:
+              assert z.testzip() is None
+              assert any(n=="NecroMinions/NecroMinions.toc" for n in z.namelist())
+          with open(os.environ["GITHUB_ENV"],"a") as f:
+              f.write("VERSION="+cfg["version"]+"\n")
+              f.write("ASSET="+str(archive)+"\n")
+          PY
+      - name: Publish verified asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            echo "::error::Version already published"
+            exit 1
+          fi
+          gh release create "$VERSION" "$ASSET" --target "$GITHUB_SHA" --title "NecroMinions-CoA $VERSION" --notes-file RELEASE-NOTES.md --latest
