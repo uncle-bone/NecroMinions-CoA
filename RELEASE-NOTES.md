@@ -1,8 +1,9 @@
-# NecroMinions-CoA v0.8.4
+# NecroMinions-CoA v0.8.5 (prerelease)
 
-- Preserve v0.8.3 minion tracking, summon classification, Life Force handling and saved settings.
-- Show the release version in the in-game options panel.
-- Document the CoA-Research v2.0.1 reconciliation: its class-pet-summon investigation contains no verified summon-to-owner edges. Unverified creature IDs 50078 (Skeletal Rogue) and 50068 (Abomination) are not imported into live classification, and are not treated as exclusions.
-- Add a GitHub Actions release pipeline with validated, installation-ready NecroMinions folder layout.
+- Added in-game diagnostics buttons for recent summon events and current Life Force / minion roster status.
+- Examined CoA-Research v2.0.1 pet-and-summon records: 7 unverified NPC candidates, 4 unverified spell attribution candidates, and 0 verified summon ownership edges.
+- Candidate records remain quarantined; no speculative minion classifications or blacklist logic were added.
+- Preserved v0.8.4 tracking, health updates, nameplate behavior, saved configuration, and slash commands.
+- Updated the options version display. No periodic work or automatic chat spam was added.
 
-No new summon mechanics were activated without live evidence. In-game testing is still required.
+Static packaging checks run in GitHub Actions. In-game behavior still needs confirmation in Conquest Reborn.
