@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.8.6 (prerelease)
+- Removed automatic friendly nameplate CVar writes and legacy restore writes.
+- Health collection now respects existing player nameplate settings.
+- Individual right-click dismissal remains unsupported pending a verified safe per-minion API.
+
 ## v0.8.5 (prerelease)
 - Integrated CoA-Research v2.0.1 evidence classifications into in-game diagnostics without enabling unverified minion mappings.
 - Added buttons for recent summon history and current minion status in the options panel; chat output only occurs on request.
