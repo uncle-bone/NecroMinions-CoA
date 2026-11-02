@@ -29,7 +29,7 @@ function Options.Create(callbacks)
 
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)
-    title:SetText("NecroMinions v0.8.4")
+    title:SetText("NecroMinions v0.8.5")
     local scroll = CreateFrame("ScrollFrame", "NecroMinionsOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", panel, "TOPLEFT", 8, -42)
     scroll:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -30, 12)
@@ -266,6 +266,15 @@ function Options.Create(callbacks)
         if callbacks.onTrackingChanged then callbacks.onTrackingChanged(value) end
     end)
     description("Zombies, March of the Dead, Animate: Skeletal Archer and other cooldown summons. Off by default; they are short-lived and rarely need a row.")
+
+    heading("Diagnostics and research")
+    description("CoA-Research v2.0.1: no verified summon ownership edges. Historical candidates are not active gameplay mappings.")
+    button("summonsDiagnostic", "Recent summon events (chat)", function()
+        if callbacks.onSummonDiagnostics then callbacks.onSummonDiagnostics() end
+    end)
+    button("statusDiagnostic", "Current minion status (chat)", function()
+        if callbacks.onStatusDiagnostics then callbacks.onStatusDiagnostics() end
+    end)
 
     heading("Life Force costs for this character")
     description("Match costs to this character's spell tooltips. Set a cost to 0 when unknown; that type will not be used for capacity estimates.")
