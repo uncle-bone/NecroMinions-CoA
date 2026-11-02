@@ -1729,6 +1729,25 @@ local configPanel = NecroMinionsOptions.Create({
         UpdateMinionFrames(forceLayout)
     end,
     onMove = ToggleChangeMode,
+    onSummonDiagnostics = function()
+        if Client.isLoggingOut then return end
+        if #summonLog == 0 then
+            DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00[NecroMinions]|r No summon events recorded yet.")
+        end
+        for _, message in ipairs(summonLog) do
+            DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00[NecroMinions]|r "..message)
+        end
+    end,
+    onStatusDiagnostics = function()
+        if Client.isLoggingOut then return end
+        if not isActive then
+            DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00[NecroMinions]|r Inactive: this character is not a Necromancer.")
+            return
+        end
+        local roster = lastRoster or Client.ReadRoster()
+        DEFAULT_CHAT_FRAME:AddMessage(string.format("|cFF00FF00[NecroMinions]|r Minions: %d. Life Force: %s/%s free. Nameplate tokens: %d.",
+            #minionOrder, tostring(roster.free or "?"), tostring(roster.capacity or "?"), Client.lastPlateCount or 0))
+    end,
     onResetAppearance = ResetAppearance,
     onCostsChanged = function()
         if Client.isLoggingOut then return end
