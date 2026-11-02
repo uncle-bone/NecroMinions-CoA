@@ -44,6 +44,7 @@ jobs:
               assert any(n=="NecroMinions/NecroMinions.toc" for n in z.namelist())
           with open(os.environ["GITHUB_ENV"],"a") as f:
               f.write("VERSION="+cfg["version"]+"\n")
+              f.write("PRERELEASE="+str(cfg.get("prerelease", True)).lower()+"\n")
               f.write("ASSET="+str(archive)+"\n")
           PY
       - name: Publish verified asset
@@ -56,4 +57,8 @@ jobs:
             echo "::error::Version already published"
             exit 1
           fi
-          gh release create "$VERSION" "$ASSET" --target "$GITHUB_SHA" --title "NecroMinions-CoA $VERSION" --notes-file RELEASE-NOTES.md --latest
+          args=(--latest)
+          if [ "$PRERELEASE" = true ]; then
+            args=(--prerelease --latest=false)
+          fi
+          gh release create "$VERSION" "$ASSET" --target "$GITHUB_SHA" --title "NecroMinions-CoA $VERSION" --notes-file RELEASE-NOTES.md "${args[@]}"
