@@ -1,9 +1,7 @@
-# NecroMinions-CoA v0.8.5 (prerelease)
+# NecroMinions-CoA v0.8.6 (prerelease)
 
-- Added in-game diagnostics buttons for recent summon events and current Life Force / minion roster status.
-- Examined CoA-Research v2.0.1 pet-and-summon records: 7 unverified NPC candidates, 4 unverified spell attribution candidates, and 0 verified summon ownership edges.
-- Candidate records remain quarantined; no speculative minion classifications or blacklist logic were added.
-- Preserved v0.8.4 tracking, health updates, nameplate behavior, saved configuration, and slash commands.
-- Updated the options version display. No periodic work or automatic chat spam was added.
-
-Static packaging checks run in GitHub Actions. In-game behavior still needs confirmation in Conquest Reborn.
+- Stop automatically enabling friendly nameplates during combat, summons, or health pulses.
+- Never restore stale nameplate CVar snapshots over the player's preferences.
+- Keep existing HUD, Life Force, summon tracking, and read-only health sources.
+- Individual right-click dismissal was not enabled: Conquest Reborn's per-guardian dismissal API is not yet verified. No fake row removal or whole-army dismissal was added.
+- In-game verification outstanding.
