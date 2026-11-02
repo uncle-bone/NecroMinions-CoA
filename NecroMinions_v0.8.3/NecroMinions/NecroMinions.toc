@@ -1,0 +1,12 @@
+## Interface: 30300
+## Title: NecroMinions 
+## Notes: Necromancer's pets HP bar(nizhni express).
+## Author: Smollett
+## Version: 0.8.3
+## SavedVariables: NecroMinionsDB
+## SavedVariablesPerCharacter: NecroMinionsCharDB
+
+NecroMinionsConfig.lua
+NecroMinionsClient.lua
+NecroMinionsOptions.lua
+NecroMinions.lua
