@@ -29,7 +29,7 @@ function Options.Create(callbacks)
 
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)
-    title:SetText("NecroMinions")
+    title:SetText("NecroMinions v0.8.4")
     local scroll = CreateFrame("ScrollFrame", "NecroMinionsOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", panel, "TOPLEFT", 8, -42)
     scroll:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -30, 12)
