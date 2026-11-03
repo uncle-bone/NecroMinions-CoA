@@ -1,5 +1,9 @@
 # NecroMinions-CoA
 
+> **[Download Here!](https://coa-research.unclebone.workers.dev/download/NecroMinions-CoA)**
+**Current stable release: v0.8.4.**
+
+
 Conquest Reborn / Ascension CoA Necromancer minion HUD for WoW 3.3.5a (Lua 5.1).
 
 Maintainer: Uncle Bone. Original author: Smollett. Existing addon files and historical README remain preserved.
