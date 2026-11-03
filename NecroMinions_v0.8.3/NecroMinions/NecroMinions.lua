@@ -392,13 +392,31 @@ local function ShowMinionTooltip(owner)
     GameTooltip:Show()
 end
 
-local function SetTargetAction(button, unit, verify)
-    local action = unit and "macro" or nil
-    local macro = unit and ("/target "..unit) or nil
-    if button:GetAttribute("unit") ~= nil then button:SetAttribute("unit", nil) end
+-- A unit token is exact when it resolves to the recorded GUID. 3.3.5a
+-- does not reliably expose unit tokens for every summoned guardian, however.
+-- For a uniquely named minion, fall back to /targetexact so the row remains
+-- usable. Never use name targeting when two tracked minions share that name.
+local function TargetActionFor(guid, preferredUnit)
+    if not guid or not minions[guid] then return nil, nil, nil end
+    local unit = Client.ResolveUnitToken(guid, preferredUnit)
+    if unit then return "target", unit, nil end
+    local data = minions[guid]
+    local name = data and data.name
+    if type(name) ~= "string" or name == "" or name:find("[\r\n]") then return nil, nil, nil end
+    for otherGuid, other in pairs(minions) do
+        if otherGuid ~= guid and other.name == name then return nil, nil, nil end
+    end
+    return "macro", nil, "/targetexact "..name
+end
+
+local function SetTargetAction(button, action, unit, macro, verify)
     if button.actionType ~= action or (verify and button:GetAttribute("type") ~= action) then
         button:SetAttribute("type", action)
         button.actionType = action
+    end
+    if button.actionUnit ~= unit or (verify and button:GetAttribute("unit") ~= unit) then
+        button:SetAttribute("unit", unit)
+        button.actionUnit = unit
     end
     if button.actionMacro ~= macro or (verify and button:GetAttribute("macrotext") ~= macro) then
         button:SetAttribute("macrotext", macro)
@@ -436,11 +454,12 @@ local function CreateMinionFrame(index)
     clickButton:SetScript("OnLeave", HideMinionTooltip)
     clickButton:SetScript("PreClick", function(self)
         if Client.isLoggingOut or InCombatLockdown() then return end
-        local unit = not isChangeMode and not isDragging and not isResizing and HudAlpha() > 0 and minions[self.targetGUID]
-            and Client.ResolveUnitToken(self.targetGUID, self.preferredUnit) or nil
-        -- A nameplate token may be recycled between the periodic refresh and
-        -- this click. Never leave an old token/name macro armed on a mismatch.
-        SetTargetAction(self, unit, true)
+        local action, unit, macro
+        if not isChangeMode and not isDragging and not isResizing and HudAlpha() > 0 then
+            action, unit, macro = TargetActionFor(self.targetGUID, self.preferredUnit)
+        end
+        -- Revalidate immediately before a click outside combat.
+        SetTargetAction(self, action, unit, macro, true)
         self.boundUnit = unit
     end)
     clickButton:SetFrameStrata(f:GetFrameStrata())
@@ -678,11 +697,14 @@ UpdateMinionFrames = function(forceLayout)
 
             local button = mf.clickButton
             if not InCombatLockdown() then
-                local unit = alpha > 0 and not isChangeMode and not isDragging and not isResizing and Client.ResolveUnitToken(guid, data.unit) or nil
+                local action, unit, macro
+                if alpha > 0 and not isChangeMode and not isDragging and not isResizing then
+                    action, unit, macro = TargetActionFor(guid, data.unit)
+                end
                 button.targetGUID, button.preferredUnit, button.boundUnit = guid, data.unit, unit
-                SetTargetAction(button, unit, false)
+                SetTargetAction(button, action, unit, macro, false)
                 local x, y = mf:GetCenter()
-                if unit and x and y then
+                if action and x and y then
                     local scale = mf:GetEffectiveScale() / button:GetEffectiveScale()
                     local bx, by, bw, bh = x * scale, y * scale, w * scale, h * scale
                     local geometry = table.concat({ bx, by, bw, bh }, "|")
@@ -696,7 +718,7 @@ UpdateMinionFrames = function(forceLayout)
                 else
                     if button:IsShown() then button:Hide() end
                     HideMinionTooltip(button)
-                    if unit and (not x or not y) then needsRefresh = true end
+                    if action and (not x or not y) then needsRefresh = true end
                 end
             end
             if tooltipChanged and tooltipOwner and (tooltipOwner == mf or tooltipOwner == button) then ShowMinionTooltip(tooltipOwner) end
@@ -712,7 +734,7 @@ UpdateMinionFrames = function(forceLayout)
         mf.renderedVisible = false
         if not InCombatLockdown() then
             button.targetGUID, button.preferredUnit, button.boundUnit = nil, nil, nil
-            SetTargetAction(button, nil, false)
+            SetTargetAction(button, nil, nil, nil, false)
             if button:IsShown() then button:Hide() end
         end
     end
