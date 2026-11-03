@@ -1,7 +1,7 @@
 # NecroMinions-CoA
 
 > **[Download Here!](https://coa-research.unclebone.workers.dev/download/NecroMinions-CoA)**
-**Current stable release: v0.8.4.**
+**Current stable release: v0.8.6.**
 
 
 Conquest Reborn / Ascension CoA Necromancer minion HUD for WoW 3.3.5a (Lua 5.1).
@@ -11,7 +11,7 @@ Maintainer: Uncle Bone. Original author: Smollett. Existing addon files and hist
 ## Installation
 Download the versioned ZIP from [Releases](https://github.com/uncle-bone/NecroMinions-CoA/releases) and extract the **NecroMinions** folder directly into `World of Warcraft/Interface/AddOns/`. Preserve your existing SavedVariables.
 
-## v0.8.6 prerelease
+## v0.8.6 stable — current minion tracking and HUD fixes
 
 This build does not change player nameplate CVars. Friendly plates stay off if the player configured them off. Existing minion HUD and combat-log estimates remain available. Per-minion right-click dismissal requires a verified client-supported operation and is not yet enabled.
 
